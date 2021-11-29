@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ContosoServices.Services
 {
-    interface ICustomerService
+    public interface ICustomerService
     {
         public object[] Get();
         public object Get(int id);

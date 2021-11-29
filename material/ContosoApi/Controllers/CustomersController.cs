@@ -9,12 +9,12 @@ namespace ContosoApi.Controllers
     [ApiController]
     public class CustomersController : ControllerBase
     {
-        private IProductService _service;
-        private ILogger<CustomersController> _logger;
+        private readonly ICustomerService _service;
+        private readonly ILogger<CustomersController> _logger;
 
         public CustomersController(
             ILogger<CustomersController> logger,
-            IProductService service
+            ICustomerService service
         )
         {
             _service = service;
@@ -40,7 +40,7 @@ namespace ContosoApi.Controllers
 
             if (found == null)
             {
-                return NotFound("No se encontró el producto.");
+                return NotFound("No se encontró el cliente.");
             }
 
             return Ok(found);
@@ -48,35 +48,28 @@ namespace ContosoApi.Controllers
 
         // POST api/<ProductsController>
         [HttpPost]
-        public ActionResult Post([FromBody] Product myNewProduct)
+        public ActionResult Post([FromBody] Customer myNewCustomer)
         {
             _logger.LogInformation("Llamado del INSERT ejecutandose");
 
-            var product = _service.Insert(myNewProduct);
+            var customer = _service.Insert(myNewCustomer);
 
-            if (product == null)
+            if (customer == null)
             {
-                return StatusCode(500, "Producto erroneo.");
+                return StatusCode(500, "Customer erroneo.");
             }
             else
             {
-                if (product.Equals("Producto insertado correctamente."))
-                {
-                    return CreatedAtAction(nameof(Get), product);
-                }
-                else
-                {
-                    return StatusCode(500, product);
-                }
+                return CreatedAtAction(nameof(Get), customer);
             }
         }
 
         [HttpPut("{id}")]
-        public ActionResult Put(int id, [FromBody] Product myNewProduct)
+        public ActionResult Put(int id, [FromBody] Customer myCustomer)
         {
             _logger.LogInformation("Llamado del UPDATE ejecutandose");
 
-            (int status, string result) = _service.Update(id, myNewProduct);
+            (int status, string result) = _service.Update(id, myCustomer);
 
             if (result == null)
             {

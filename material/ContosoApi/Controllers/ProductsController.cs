@@ -9,8 +9,8 @@ namespace ProductsApi.Controllers
     [ApiController]
     public class ProductsController : ControllerBase
     {
-        private IProductService _service;
-        private ILogger<ProductsController> _logger;
+        private readonly IProductService _service;
+        private readonly ILogger<ProductsController> _logger;
 
         public ProductsController(
             ILogger<ProductsController> logger,
@@ -60,14 +60,7 @@ namespace ProductsApi.Controllers
             }
             else
             {
-                if (product.Equals("Producto insertado correctamente."))
-                {
-                    return CreatedAtAction(nameof(Get), product);
-                }
-                else
-                {
-                    return StatusCode(500, product);
-                }
+                return CreatedAtAction(nameof(Get), product);
             }
         }
 

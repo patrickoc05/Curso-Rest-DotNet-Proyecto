@@ -34,9 +34,9 @@ namespace ContosoApi
             services.AddScoped<AdventureworksContext>();
 
             services.AddScoped<IProductService, ProductService>();
-            //services.AddScoped<ICustomerService, CustomerService>();
-            //services.AddScoped<ICategoryService, CategoryService>();
-            //services.AddScoped<IOrderService, OrderService>();
+            services.AddScoped<ICustomerService, CustomerService>();
+            services.AddScoped<ICategoryService, CategoryService>();
+            services.AddScoped<ISaleOrderService, SaleOrderService>();
 
             services.AddCors(options =>
             {
