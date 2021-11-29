@@ -1,0 +1,40 @@
+USE [AdventureWorks]
+GO
+
+/****** Object:  Table [SalesLT].[ProductReview]    Script Date: 29/11/2021 17:40:55 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [SalesLT].[ProductReview](
+	[ReviewID] [int] IDENTITY(1,1) NOT NULL,
+	[ProductID] [int] NOT NULL,
+	[CustomerID] [int] NULL,
+	[Review] [varchar](500) NOT NULL,
+	[Rating] [decimal](1, 1) NOT NULL,
+	[rowguid] [uniqueidentifier] NOT NULL,
+	[ModifiedDate] [datetime] NOT NULL,
+ CONSTRAINT [PK_ProductReview] PRIMARY KEY CLUSTERED 
+(
+	[ReviewID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+ALTER TABLE [SalesLT].[ProductReview]  WITH CHECK ADD  CONSTRAINT [FK_ProductReview_Customer] FOREIGN KEY([CustomerID])
+REFERENCES [SalesLT].[Customer] ([CustomerID])
+GO
+
+ALTER TABLE [SalesLT].[ProductReview] CHECK CONSTRAINT [FK_ProductReview_Customer]
+GO
+
+ALTER TABLE [SalesLT].[ProductReview]  WITH CHECK ADD  CONSTRAINT [FK_ProductReview_Product] FOREIGN KEY([ProductID])
+REFERENCES [SalesLT].[Product] ([ProductID])
+GO
+
+ALTER TABLE [SalesLT].[ProductReview] CHECK CONSTRAINT [FK_ProductReview_Product]
+GO
+
+
