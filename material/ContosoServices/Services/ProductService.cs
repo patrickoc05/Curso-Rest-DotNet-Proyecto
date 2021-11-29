@@ -2,9 +2,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
-namespace ProductsApi.Services
+namespace ContosoServices.Services
 {
     public class ProductService : IProductService
     {
@@ -94,7 +95,7 @@ namespace ProductsApi.Services
                     product.ModifiedDate = DateTime.Now;
                 }
                 catch (Exception ex)
-                {                    
+                {
                     return (500, ex.InnerException.ToString());
                 }
 

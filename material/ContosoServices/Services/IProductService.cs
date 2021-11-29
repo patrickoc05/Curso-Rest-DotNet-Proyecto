@@ -1,6 +1,6 @@
 ﻿using DataAccessLayer.Entities;
 
-namespace ProductsApi.Services
+namespace ContosoServices.Services
 {
     public interface IProductService
     {

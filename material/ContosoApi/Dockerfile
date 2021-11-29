@@ -6,16 +6,16 @@ EXPOSE 80
 
 FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
 WORKDIR /src
-COPY ["OrdersApi/OrdersApi.csproj", "OrdersApi/"]
-RUN dotnet restore "OrdersApi/OrdersApi.csproj"
+COPY ["ContosoApi/ContosoApi.csproj", "ContosoApi/"]
+RUN dotnet restore "ContosoApi/ContosoApi.csproj"
 COPY . .
-WORKDIR "/src/OrdersApi"
-RUN dotnet build "OrdersApi.csproj" -c Release -o /app/build
+WORKDIR "/src/ContosoApi"
+RUN dotnet build "ContosoApi.csproj" -c Release -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "OrdersApi.csproj" -c Release -o /app/publish
+RUN dotnet publish "ContosoApi.csproj" -c Release -o /app/publish
 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "OrdersApi.dll"]
+ENTRYPOINT ["dotnet", "ContosoApi.dll"]
