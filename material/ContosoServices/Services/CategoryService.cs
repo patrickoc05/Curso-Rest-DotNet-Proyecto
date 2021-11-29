@@ -23,6 +23,12 @@ namespace ContosoServices.Services
                 product.ProductCategoryId,
                 product.ParentProductCategoryId,
                 product.Name,
+                Products = _dbContext.Products.Where(x => x.ProductCategoryId == product.ProductCategoryId).Select(productCat => new
+                {
+                    productCat.ProductId,
+                    productCat.Name,
+                    productCat.ListPrice,
+                }).ToList()
             }).ToArray();
         }
 
@@ -30,7 +36,22 @@ namespace ContosoServices.Services
         {
             if (_dbContext.ProductCategories.Any(x => x.ProductCategoryId == id))
             {
-                return _dbContext.ProductCategories.Find(id);
+                var MyCategory = _dbContext.ProductCategories.Find(id);
+
+                var category = new
+                {
+                    MyCategory.ProductCategoryId,
+                    MyCategory.ParentProductCategoryId,
+                    MyCategory.Name,
+                    Products = _dbContext.Products.Where(x => x.ProductCategoryId == MyCategory.ProductCategoryId).Select(productCat => new
+                    {
+                        productCat.ProductId,
+                        productCat.Name,
+                        productCat.ListPrice,
+                    }).ToList()
+                };
+
+                return category;
             }
             else
             {
@@ -47,7 +68,7 @@ namespace ContosoServices.Services
                     return null;
                 }
 
-                if (_dbContext.Products.Any(x => x.ProductId == myNewProductCategory.ProductCategoryId))
+                if (_dbContext.ProductCategories.Any(x => x.ProductCategoryId == myNewProductCategory.ProductCategoryId))
                 {
                     return null;
                 }
@@ -102,9 +123,9 @@ namespace ContosoServices.Services
         {
             if (_dbContext.ProductCategories.Any(x => x.ProductCategoryId == id))
             {
-                var product = _dbContext.ProductCategories.Find(id);
+                var productCategory = _dbContext.ProductCategories.Find(id);
 
-                _dbContext.ProductCategories.Remove(product);
+                _dbContext.ProductCategories.Remove(productCategory);
                 _dbContext.SaveChanges();
 
                 return (200, "Categoría de producto eliminado correctamente.");

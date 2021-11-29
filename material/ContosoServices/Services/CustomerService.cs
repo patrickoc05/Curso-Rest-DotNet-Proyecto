@@ -26,14 +26,48 @@ namespace ContosoServices.Services
                 customer.LastName,
                 customer.Phone,
                 customer.EmailAddress,
+                Address = _dbContext.CustomerAddresses.Where(x => x.CustomerId == customer.CustomerId).Select(x => new
+                {
+                    x.AddressType,
+                    x.Address.AddressId,
+                    x.Address.AddressLine1,
+                    x.Address.AddressLine2,
+                    x.Address.City,
+                    x.Address.StateProvince,
+                    x.Address.CountryRegion,
+                    x.Address.PostalCode,
+                }).ToList()
             }).ToArray();
         }
 
         public object Get(int id)
         {
-            if (_dbContext.Products.Any(x => x.ProductId == id))
+            if (_dbContext.Customers.Any(x => x.CustomerId == id))
             {
-                return _dbContext.Products.Find(id);
+                var Mycustomer = _dbContext.Customers.Find(id);
+
+                var customer = new
+                {
+                    Mycustomer.CustomerId,
+                    Mycustomer.FirstName,
+                    Mycustomer.MiddleName,
+                    Mycustomer.LastName,
+                    Mycustomer.Phone,
+                    Mycustomer.EmailAddress,
+                    Address = _dbContext.CustomerAddresses.Where(x => x.CustomerId == id).Select(x => new
+                    {
+                        x.AddressType,
+                        x.Address.AddressId,
+                        x.Address.AddressLine1,
+                        x.Address.AddressLine2,
+                        x.Address.City,
+                        x.Address.StateProvince,
+                        x.Address.CountryRegion,
+                        x.Address.PostalCode,
+                    }).ToList()
+                };
+
+                return customer;
             }
             else
             {
@@ -76,7 +110,7 @@ namespace ContosoServices.Services
                 return (404, "Cliente no viene con la estructura correspondiente.");
             }
 
-            if (_dbContext.Products.Any(x => x.ProductId == id))
+            if (_dbContext.Customers.Any(x => x.CustomerId == id))
             {
                 var customer = _dbContext.Customers.Find(id);
 
@@ -109,9 +143,9 @@ namespace ContosoServices.Services
         {
             if (_dbContext.Customers.Any(x => x.CustomerId == id))
             {
-                var product = _dbContext.Customers.Find(id);
+                var customer = _dbContext.Customers.Find(id);
 
-                _dbContext.Customers.Remove(product);
+                _dbContext.Customers.Remove(customer);
                 _dbContext.SaveChanges();
 
                 return (200, "Cliente eliminado correctamente.");

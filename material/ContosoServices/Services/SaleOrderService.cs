@@ -31,7 +31,16 @@ namespace ContosoServices.Services
                 saleOrder.SubTotal,
                 saleOrder.TaxAmt,
                 saleOrder.TotalDue,
-                saleOrder.SalesOrderDetails
+                SalesOrderDetails = _dbContext.SalesOrderDetails.Where(x => x.SalesOrderId == saleOrder.SalesOrderId).Select(x => new
+                {
+                    x.Product.ProductId,
+                    x.Product.Name,
+                    x.Product.ProductCategoryId,
+                    x.OrderQty,
+                    x.UnitPrice,
+                    x.UnitPriceDiscount,
+                    x.ModifiedDate
+                }).ToList()
             }).ToArray();
         }
 
@@ -39,7 +48,64 @@ namespace ContosoServices.Services
         {
             if (_dbContext.SalesOrderHeaders.Any(x => x.SalesOrderId == id))
             {
-                return _dbContext.SalesOrderHeaders.Find(id);
+                var mySaleOrder = _dbContext.SalesOrderHeaders.Find(id);
+                mySaleOrder.SalesOrderDetails = _dbContext.SalesOrderDetails.Where(x => x.SalesOrderId == mySaleOrder.SalesOrderId).ToList();
+
+                mySaleOrder.SalesOrderDetails.ToList().ForEach(x => { 
+                    x.Product = _dbContext.Products.Find(x.ProductId);
+                });
+
+                var myCustomer = _dbContext.Customers.Find(mySaleOrder.CustomerId);
+
+                if (mySaleOrder.SalesOrderDetails.Count > 0)
+                {
+                    var saleOrder = new
+                    {
+                        mySaleOrder.SalesOrderId,
+                        CustomerId = myCustomer == null ? 0 : myCustomer.CustomerId,
+                        FirstName = myCustomer == null ? "" : myCustomer.FirstName,
+                        MiddleName = myCustomer == null ? "" : myCustomer.MiddleName,
+                        LastName = myCustomer == null ? "" : myCustomer.LastName,
+                        mySaleOrder.Comment,
+                        mySaleOrder.DueDate,
+                        mySaleOrder.Status,
+                        mySaleOrder.SubTotal,
+                        mySaleOrder.TaxAmt,
+                        mySaleOrder.TotalDue,
+                        Details = mySaleOrder.SalesOrderDetails.Select(x => new
+                        {
+                            x.Product.ProductId,
+                            x.Product.Name,
+                            x.Product.ProductCategoryId,
+                            x.OrderQty,
+                            x.UnitPrice,
+                            x.UnitPriceDiscount,
+                            x.ModifiedDate
+                        }).ToList()
+                    };
+
+                    return saleOrder;
+                }
+                else
+                {
+                    var saleOrder = new
+                    {
+                        mySaleOrder.SalesOrderId,
+                        CustomerId = myCustomer == null ? 0 : myCustomer.CustomerId,
+                        FirstName = myCustomer == null ? "" : myCustomer.FirstName,
+                        MiddleName = myCustomer == null ? "" : myCustomer.MiddleName,
+                        LastName = myCustomer == null ? "" : myCustomer.LastName,
+                        mySaleOrder.Comment,
+                        mySaleOrder.DueDate,
+                        mySaleOrder.Status,
+                        mySaleOrder.SubTotal,
+                        mySaleOrder.TaxAmt,
+                        mySaleOrder.TotalDue,
+                        Details = Array.Empty<object>()
+                    };
+
+                    return saleOrder;
+                }
             }
             else
             {
