@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata;
 
 #nullable disable
 
-namespace DataAccessLayer.Entities
+namespace DataAccessLayer
 {
     public partial class AdventureworksContext : DbContext
     {
@@ -27,20 +27,21 @@ namespace DataAccessLayer.Entities
         public virtual DbSet<ProductDescription> ProductDescriptions { get; set; }
         public virtual DbSet<ProductModel> ProductModels { get; set; }
         public virtual DbSet<ProductModelProductDescription> ProductModelProductDescriptions { get; set; }
+        public virtual DbSet<ProductReview> ProductReviews { get; set; }
         public virtual DbSet<SalesOrderDetail> SalesOrderDetails { get; set; }
         public virtual DbSet<SalesOrderHeader> SalesOrderHeaders { get; set; }
         public virtual DbSet<VGetAllCategory> VGetAllCategories { get; set; }
         public virtual DbSet<VProductAndDescription> VProductAndDescriptions { get; set; }
         public virtual DbSet<VProductModelCatalogDescription> VProductModelCatalogDescriptions { get; set; }
 
-//        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-//        {
-//            if (!optionsBuilder.IsConfigured)
-//            {
-//#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-//                optionsBuilder.UseSqlServer("data source=localhost,1433;initial catalog=Adventureworks;persist security info=True;user id=sa;password=Password.123;MultipleActiveResultSets=True;");
-//            }
-//        }
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            if (!optionsBuilder.IsConfigured)
+            {
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
+                optionsBuilder.UseSqlServer("data source=localhost,1433;initial catalog=Adventureworks;persist security info=True;user id=sa;password=Password.123;MultipleActiveResultSets=True;");
+            }
+        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -275,14 +276,6 @@ namespace DataAccessLayer.Entities
                 entity.Property(e => e.ThumbnailPhotoFileName).HasMaxLength(50);
 
                 entity.Property(e => e.Weight).HasColumnType("decimal(8, 2)");
-
-                entity.HasOne(d => d.ProductCategory)
-                    .WithMany(p => p.Products)
-                    .HasForeignKey(d => d.ProductCategoryId);
-
-                entity.HasOne(d => d.ProductModel)
-                    .WithMany(p => p.Products)
-                    .HasForeignKey(d => d.ProductModelId);
             });
 
             modelBuilder.Entity<ProductCategory>(entity =>
@@ -401,6 +394,41 @@ namespace DataAccessLayer.Entities
                     .WithMany(p => p.ProductModelProductDescriptions)
                     .HasForeignKey(d => d.ProductModelId)
                     .OnDelete(DeleteBehavior.ClientSetNull);
+            });
+
+            modelBuilder.Entity<ProductReview>(entity =>
+            {
+                entity.HasKey(e => e.ReviewId);
+
+                entity.ToTable("ProductReview", "SalesLT");
+
+                entity.Property(e => e.ReviewId).HasColumnName("ReviewID");
+
+                entity.Property(e => e.CustomerId).HasColumnName("CustomerID");
+
+                entity.Property(e => e.ModifiedDate).HasColumnType("datetime");
+
+                entity.Property(e => e.ProductId).HasColumnName("ProductID");
+
+                entity.Property(e => e.Rating).HasColumnType("decimal(1, 1)");
+
+                entity.Property(e => e.Review)
+                    .IsRequired()
+                    .HasMaxLength(500)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Rowguid).HasColumnName("rowguid");
+
+                entity.HasOne(d => d.Customer)
+                    .WithMany(p => p.ProductReviews)
+                    .HasForeignKey(d => d.CustomerId)
+                    .HasConstraintName("FK_ProductReview_Customer");
+
+                entity.HasOne(d => d.Product)
+                    .WithMany(p => p.ProductReviews)
+                    .HasForeignKey(d => d.ProductId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_ProductReview_Product");
             });
 
             modelBuilder.Entity<SalesOrderDetail>(entity =>

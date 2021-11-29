@@ -3,13 +3,14 @@ using System.Collections.Generic;
 
 #nullable disable
 
-namespace DataAccessLayer.Entities
+namespace DataAccessLayer
 {
     public partial class Customer
     {
         public Customer()
         {
             CustomerAddresses = new HashSet<CustomerAddress>();
+            ProductReviews = new HashSet<ProductReview>();
             SalesOrderHeaders = new HashSet<SalesOrderHeader>();
         }
 
@@ -30,6 +31,7 @@ namespace DataAccessLayer.Entities
         public DateTime ModifiedDate { get; set; }
 
         public virtual ICollection<CustomerAddress> CustomerAddresses { get; set; }
+        public virtual ICollection<ProductReview> ProductReviews { get; set; }
         public virtual ICollection<SalesOrderHeader> SalesOrderHeaders { get; set; }
     }
 }

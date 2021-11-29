@@ -3,14 +3,13 @@ using System.Collections.Generic;
 
 #nullable disable
 
-namespace DataAccessLayer.Entities
+namespace DataAccessLayer
 {
     public partial class ProductCategory
     {
         public ProductCategory()
         {
             InverseParentProductCategory = new HashSet<ProductCategory>();
-            Products = new HashSet<Product>();
         }
 
         public int ProductCategoryId { get; set; }
@@ -21,6 +20,5 @@ namespace DataAccessLayer.Entities
 
         public virtual ProductCategory ParentProductCategory { get; set; }
         public virtual ICollection<ProductCategory> InverseParentProductCategory { get; set; }
-        public virtual ICollection<Product> Products { get; set; }
     }
 }

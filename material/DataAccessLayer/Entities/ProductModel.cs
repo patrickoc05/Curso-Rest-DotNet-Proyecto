@@ -3,14 +3,13 @@ using System.Collections.Generic;
 
 #nullable disable
 
-namespace DataAccessLayer.Entities
+namespace DataAccessLayer
 {
     public partial class ProductModel
     {
         public ProductModel()
         {
             ProductModelProductDescriptions = new HashSet<ProductModelProductDescription>();
-            Products = new HashSet<Product>();
         }
 
         public int ProductModelId { get; set; }
@@ -20,6 +19,5 @@ namespace DataAccessLayer.Entities
         public DateTime ModifiedDate { get; set; }
 
         public virtual ICollection<ProductModelProductDescription> ProductModelProductDescriptions { get; set; }
-        public virtual ICollection<Product> Products { get; set; }
     }
 }
