@@ -9,7 +9,7 @@ namespace ContosoServices.Services
 {
     public class ProductService : IProductService
     {
-        private AdventureworksContext _dbContext;
+        private readonly AdventureworksContext _dbContext;
 
         public ProductService(AdventureworksContext dbContext)
         {

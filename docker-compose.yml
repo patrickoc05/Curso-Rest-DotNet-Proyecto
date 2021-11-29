@@ -15,19 +15,19 @@ services:
     ports:
       - "1433:1433"
 
-  dotnet-frontend:
-    build:
-      context: .
-      dockerfile: material/Frontend/Dockerfile
-    ports:
-    - "80:80"
-    environment:
-      -  ASPNETCORE_URLS=http://+:80
+  #dotnet-frontend:
+  #  build:
+  #    context: .
+  #    dockerfile: material/Frontend/Dockerfile
+  #  ports:
+  #  - "80:80"
+  #  environment:
+  #    -  ASPNETCORE_URLS=http://+:80
   
   dotnet-backend:
     build:
       context: .
-      dockerfile: material/ProductsApi/Dockerfile
+      dockerfile: material/ContosoApi/Dockerfile
     ports:
     - "6001:80"
     environment:

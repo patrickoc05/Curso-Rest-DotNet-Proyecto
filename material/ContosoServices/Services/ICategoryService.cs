@@ -2,12 +2,12 @@
 
 namespace ContosoServices.Services
 {
-    public interface IProductService
+    public interface ICategoryService
     {
         public object[] Get();
         public object Get(int id);
-        public Product Insert(Product myNewProduct);
-        public (int, string) Update(int id, Product myProduct);
+        public ProductCategory Insert(ProductCategory myNewProductCategory);
+        public (int, string) Update(int id, ProductCategory myProductCategory);
         public (int, string) Delete(int id);
     }
 }
