@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 #nullable disable
 
-namespace DataAccessLayer
+namespace DataAccessLayer.Entities
 {
     public partial class Product
     {
