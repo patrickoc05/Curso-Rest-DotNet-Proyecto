@@ -22,8 +22,186 @@ namespace ContosoServices.Services
             {
                 product.ProductId,
                 product.Name,
-                product.ListPrice,
+                product.ListPrice
             }).ToArray();
+        }
+
+        public object[] Get(int id, string name, int categoryId, string propertyOrder, string typeOrder, int limit)
+        {
+            List<Product> productsReturn = new();
+
+            if (id == 0 && name == null && categoryId == 0)
+            {
+                productsReturn = _dbContext.Products.Select(product => new Product
+                {
+                    ProductId = product.ProductId,
+                    Name = product.Name,
+                    ListPrice = product.ListPrice,
+                    ProductCategoryId = product.ProductCategoryId,
+                    ModifiedDate = product.ModifiedDate,
+                    Weight = _dbContext.ProductReviews.Where(x => x.ProductId == product.ProductId).Average(x => x.Rating)
+                }).ToList();
+
+                if (string.IsNullOrEmpty(propertyOrder))
+                {
+                    propertyOrder = " ";
+                }
+            }
+
+            if (id > 0)
+            {
+                if (_dbContext.Products.Any(x => x.ProductId == id))
+                {
+                    productsReturn = _dbContext.Products.Where(x => x.ProductId == id).Select(product => new Product
+                    {
+                        ProductId = product.ProductId,
+                        Name = product.Name,
+                        ListPrice = product.ListPrice,
+                        ProductCategoryId = product.ProductCategoryId,
+                        ModifiedDate = product.ModifiedDate,
+                        Weight = _dbContext.ProductReviews.Where(x => x.ProductId == product.ProductId).Average(x => x.Rating)
+                    }).ToList();
+                }
+            }
+
+            if (!string.IsNullOrEmpty(name))
+            {
+                if (productsReturn.Count == 0)
+                {
+                    productsReturn = _dbContext.Products.Where(x => x.Name.Contains(name)).Select(product => new Product
+                    {
+                        ProductId = product.ProductId,
+                        Name = product.Name,
+                        ListPrice = product.ListPrice,
+                        ProductCategoryId = product.ProductCategoryId,
+                        ModifiedDate = product.ModifiedDate,
+                        Weight = _dbContext.ProductReviews.Where(x => x.ProductId == product.ProductId).Average(x => x.Rating)
+                    }).ToList();
+                }
+                else
+                {
+                    productsReturn = productsReturn.Where(x => x.Name.Contains(name)).ToList();
+                }
+            }
+
+            if (categoryId > 0)
+            {
+                if (productsReturn.Count == 0)
+                {
+                    productsReturn = _dbContext.Products.Where(x => x.ProductCategoryId == categoryId).Select(product => new Product
+                    {
+                        ProductId = product.ProductId,
+                        Name = product.Name,
+                        ListPrice = product.ListPrice,
+                        ProductCategoryId = product.ProductCategoryId,
+                        ModifiedDate = product.ModifiedDate,
+                        Weight = _dbContext.ProductReviews.Where(x => x.ProductId == product.ProductId).Average(x => x.Rating)
+                    }).ToList();
+                }
+                else
+                {
+                    productsReturn = productsReturn.Where(x => x.ProductCategoryId == categoryId).ToList();
+                }
+            }
+
+            if (!string.IsNullOrEmpty(propertyOrder))
+            {
+                if (productsReturn.Count > 0)
+                {
+                    if (string.IsNullOrEmpty(typeOrder))
+                    {
+                        typeOrder = "asc";
+                    }
+
+                    switch (propertyOrder.ToLower())
+                    {
+                        case "new":
+                            {
+                                if (typeOrder.ToLower().Equals("asc"))
+                                {
+                                    productsReturn = productsReturn.OrderBy(x => x.ModifiedDate).ToList();
+                                }
+                                else
+                                {
+                                    productsReturn = productsReturn.OrderByDescending(x => x.ModifiedDate).ToList();
+                                }
+                                break;
+                            };
+                        case "voted":
+                            {
+                                if (typeOrder.ToLower().Equals("asc"))
+                                {
+                                    productsReturn = productsReturn.OrderBy(x => x.Weight ?? 0).ToList();
+                                }
+                                else
+                                {
+                                    productsReturn = productsReturn.OrderByDescending(x => x.Weight ?? 0).ToList();
+                                }
+                                break;
+                            };
+                        case "trending":
+                            {
+                                if (typeOrder.ToLower().Equals("asc"))
+                                {
+                                    productsReturn = productsReturn.OrderBy(x => x.ProductId).ToList();
+                                }
+                                else
+                                {
+                                    productsReturn = productsReturn.OrderByDescending(x => x.ProductId).ToList();
+                                }
+                                break;
+                            };
+                        case "price":
+                            {
+                                if (typeOrder.ToLower().Equals("asc"))
+                                {
+                                    productsReturn = productsReturn.OrderBy(x => x.ListPrice).ToList();
+                                }
+                                else
+                                {
+                                    productsReturn = productsReturn.OrderByDescending(x => x.ListPrice).ToList();
+                                }
+                                break;
+                            };
+                        case "name":
+                            {
+                                if (typeOrder.ToLower().Equals("asc"))
+                                {
+                                    productsReturn = productsReturn.OrderBy(x => x.Name).ToList();
+                                }
+                                else
+                                {
+                                    productsReturn = productsReturn.OrderByDescending(x => x.Name).ToList();
+                                }
+                                break;
+                            };
+                        default:
+                            {
+                                if (typeOrder.ToLower().Equals("asc"))
+                                {
+                                    productsReturn = productsReturn.OrderBy(x => x.ProductId).ToList();
+                                }
+                                else
+                                {
+                                    productsReturn = productsReturn.OrderByDescending(x => x.ProductId).ToList();
+                                }
+                                break;
+                            };
+                    }
+                }
+            }
+
+            if (limit > 0)
+            {
+                productsReturn = productsReturn.Take(limit).ToList();
+            }
+
+            return productsReturn.Select(product => new
+            {
+                product.ProductId,
+                product.Name,
+                product.ListPrice
+            }).ToArray(); ;
         }
 
         public object Get(int id)

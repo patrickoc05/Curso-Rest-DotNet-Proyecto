@@ -23,13 +23,13 @@ namespace ProductsApi.Controllers
             _logger.LogInformation("DI correcto");
         }
 
-        [HttpGet]
-        public ActionResult Get()
-        {
-            _logger.LogInformation("Llamado del GET ejecutandose");
+        //[HttpGet]
+        //public ActionResult Get()
+        //{
+        //    _logger.LogInformation("Llamado del GET ejecutandose");
 
-            return Ok(_service.Get());
-        }
+        //    return Ok(_service.Get());
+        //}
 
         [HttpGet("{id}")]
         public ActionResult Get(int id)
@@ -44,6 +44,20 @@ namespace ProductsApi.Controllers
             }
 
             return Ok(found);
+        }
+
+        //int id, string name, int categoryId, string propertyOrder, string typeOrder, int limit
+        [HttpGet]
+        public ActionResult Get([FromQuery] int id, [FromQuery] string name, [FromQuery] int categoryId, [FromQuery] string propertyOrder, [FromQuery] string typeOrder, [FromQuery] int limit)
+        {
+            _logger.LogInformation("Llamado del GET ejecutandose");
+
+            if(id == 0 && name == null && categoryId == 0 && propertyOrder == null && typeOrder == null && limit == 0)
+            {
+                return Ok(_service.Get());
+            }
+
+            return Ok(_service.Get(id, name, categoryId, propertyOrder, typeOrder, limit));
         }
 
         // POST api/<ProductsController>
