@@ -37,6 +37,7 @@ namespace ContosoApi
             services.AddScoped<ICustomerService, CustomerService>();
             services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped<ISaleOrderService, SaleOrderService>();
+            services.AddScoped<IReviewService, ReviewService>();
 
             services.AddCors(options =>
             {

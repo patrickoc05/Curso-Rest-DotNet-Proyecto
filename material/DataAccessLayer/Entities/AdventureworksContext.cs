@@ -410,7 +410,7 @@ namespace DataAccessLayer.Entities
 
                 entity.Property(e => e.ProductId).HasColumnName("ProductID");
 
-                entity.Property(e => e.Rating).HasColumnType("decimal(1, 1)");
+                entity.Property(e => e.Rating).HasColumnType("decimal(5, 2)");
 
                 entity.Property(e => e.Review)
                     .IsRequired()

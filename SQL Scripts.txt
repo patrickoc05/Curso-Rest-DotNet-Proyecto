@@ -13,7 +13,7 @@ CREATE TABLE [SalesLT].[ProductReview](
 	[ProductID] [int] NOT NULL,
 	[CustomerID] [int] NULL,
 	[Review] [varchar](500) NOT NULL,
-	[Rating] [decimal](1, 1) NOT NULL,
+	[Rating] [decimal](5, 2) NOT NULL,
 	[rowguid] [uniqueidentifier] NOT NULL,
 	[ModifiedDate] [datetime] NOT NULL,
  CONSTRAINT [PK_ProductReview] PRIMARY KEY CLUSTERED 
