@@ -116,18 +116,25 @@ namespace ContosoServices.Services
 
         public (int, string) Delete(int id)
         {
-            if (_dbContext.ProductReviews.Any(x => x.ReviewId == id))
+            try
             {
-                var productReview = _dbContext.ProductReviews.Find(id);
+                if (_dbContext.ProductReviews.Any(x => x.ReviewId == id))
+                {
+                    var productReview = _dbContext.ProductReviews.Find(id);
 
-                _dbContext.ProductReviews.Remove(productReview);
-                _dbContext.SaveChanges();
+                    _dbContext.ProductReviews.Remove(productReview);
+                    _dbContext.SaveChanges();
 
-                return (200, "Product review eliminado correctamente.");
+                    return (200, "Product review eliminado correctamente.");
+                }
+                else
+                {
+                    return (404, "Producto review no encontrado.");
+                }
             }
-            else
+            catch (Exception ex)
             {
-                return (404, "Producto review no encontrado.");
+                return (404, "Producto review no encontrado. " + ex.InnerException.ToString());
             }
         }
     }
